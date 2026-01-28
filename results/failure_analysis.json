@@ -1,0 +1,22 @@
+{
+  "threshold": 0.6,
+  "retrieval_failures": {
+    "missing_context_count": 2,
+    "low_relevance_count": 6,
+    "technical_queries_count": 6,
+    "total_queries": 20
+  },
+  "generation_failures": {
+    "hallucinations_count": 0,
+    "out_of_scope_count": 0,
+    "incomplete_count": 0,
+    "total_queries": 20
+  },
+  "recommendations": [
+    {
+      "issue": "Low relevance scores",
+      "severity": "MEDIUM",
+      "suggestion": "Adjust score thresholds or improve embedding quality"
+    }
+  ]
+}

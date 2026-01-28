@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-01-26T20:09:39.764830",
+  "dataset_size": "10 PDFs",
+  "phase": "Phase 1: Baseline & Scalability Testing",
+  "purpose": "Establish ground truth metrics before parameter tuning",
+  "retrieval": {
+    "method": "hybrid",
+    "mrr": 0.9,
+    "context_relevance": 0.48154782635664983,
+    "avg_latency_ms": 90.34405946731567,
+    "p50_latency_ms": 29.789328575134277,
+    "p95_latency_ms": 109.21260118484581,
+    "p99_latency_ms": 1003.8777756690964,
+    "total_queries": 20,
+    "failed_queries": 0,
+    "precision_at_3": 0.9,
+    "recall_at_3": 0.8375
+  },
+  "generation": {
+    "method": "hybrid",
+    "faithfulness": 0.8766666666666667,
+    "answer_relevance": 0.6830194951247582,
+    "context_precision": 0.8800000000000001,
+    "hallucination_rate": 0.12333333333333332,
+    "avg_retrieval_time_ms": 32.93724060058594,
+    "avg_generation_time_ms": 56119.52532529831,
+    "avg_total_time_ms": 56152.462565898895,
+    "total_queries": 20,
+    "failed_queries": 0
+  },
+  "system_health": {
+    "retrieval_quality": "EXCELLENT",
+    "generation_quality": "EXCELLENT",
+    "overall_status": "PRODUCTION_READY",
+    "ready_for_tuning": true
+  },
+  "notes": []
+}
