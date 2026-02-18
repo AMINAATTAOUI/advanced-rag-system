@@ -1,6 +1,10 @@
 """
 FastAPI application for the RAG system.
 Provides REST API endpoints for querying the system.
+
+LangChain orchestration is transparent to the API layer — all components
+(VectorStore, BM25Retriever, HybridRetriever, Reranker, LLMClient, RAGChain)
+now use LangChain internally while exposing the same backward-compatible interface.
 """
 
 from fastapi import FastAPI, HTTPException, status
@@ -38,40 +42,40 @@ bm25_retriever = None
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events."""
     # Startup
-    log.info("Starting RAG API server...")
+    log.info("Starting RAG API server (LangChain-powered)...")
     
     global rag_chain, vector_store, bm25_retriever
     
     try:
-        # Initialize components
-        log.info("Initializing components...")
-        vector_store = VectorStore()
-        bm25_retriever = BM25Retriever()
+        # Initialize LangChain-powered components
+        log.info("Initializing LangChain components...")
+        vector_store = VectorStore()          # → LangChain Chroma
+        bm25_retriever = BM25Retriever()      # → LangChain BM25Retriever
         
         # Load BM25 index if exists
         if not bm25_retriever.load_index():
             log.warning("BM25 index not found. Please run build_index.py first.")
         
-        # Initialize reranker
+        # Initialize reranker → LangChain CrossEncoderReranker
         reranker = Reranker()
         
-        # Initialize hybrid retriever
+        # Initialize hybrid retriever → LangChain EnsembleRetriever
         hybrid_retriever = HybridRetriever(
             vector_store=vector_store,
             bm25_retriever=bm25_retriever,
             reranker=reranker
         )
         
-        # Initialize LLM client
+        # Initialize LLM client → LangChain ChatOllama
         llm_client = LLMClient()
         
-        # Initialize RAG chain
+        # Initialize RAG chain → LCEL pipeline
         rag_chain = RAGChain(
             retriever=hybrid_retriever,
             llm_client=llm_client
         )
         
-        log.info("RAG API server started successfully!")
+        log.info("RAG API server started successfully! (All components powered by LangChain)")
         
     except Exception as e:
         log.error(f"Error during startup: {e}")
@@ -119,7 +123,7 @@ async def health_check():
         # Check components
         components = {
             "vector_store": vector_store is not None and vector_store.collection.count() > 0,
-            "bm25_index": bm25_retriever is not None and bm25_retriever.bm25 is not None,
+            "bm25_index": bm25_retriever is not None and bm25_retriever.lc_retriever is not None,
             "llm": rag_chain is not None and rag_chain.llm_client.check_model_availability(),
             "rag_chain": rag_chain is not None
         }

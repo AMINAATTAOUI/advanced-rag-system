@@ -1,175 +1,158 @@
 """
-Cross-encoder reranker for improving retrieval quality.
-Reranks initial retrieval results using a more powerful model.
+Cross-encoder reranker using LangChain's document compressor pipeline.
+
+LangChain Components Used:
+- langchain_classic.retrievers.document_compressors.CrossEncoderReranker
+    -> Wraps a cross-encoder model for reranking
+- langchain_community.cross_encoders.HuggingFaceCrossEncoder
+    -> Loads the HuggingFace cross-encoder model
+- langchain_classic.retrievers.ContextualCompressionRetriever
+    -> Wraps any retriever + compressor into a single retriever
+
+Key LangChain patterns:
+  compressor = CrossEncoderReranker(model=HuggingFaceCrossEncoder(...), top_n=10)
+  ContextualCompressionRetriever(base_compressor=compressor, base_retriever=retriever)
 """
 
 from typing import List, Dict
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
+
+# ── LangChain Cross-Encoder Reranker ────────────────────────────────────
+from langchain_classic.retrievers.document_compressors import CrossEncoderReranker
+from langchain_community.cross_encoders import HuggingFaceCrossEncoder
+from langchain_classic.retrievers import ContextualCompressionRetriever
+from langchain_core.documents import Document
+
 from src.config import settings
 from src.utils.logger import log
 
 
 class Reranker:
-    """Cross-encoder based reranker for improving retrieval results."""
-    
+    """
+    Cross-encoder reranker managed through LangChain's CrossEncoderReranker
+    and ContextualCompressionRetriever.
+
+    Exposes both LangChain-native interface (as_compressor / wrap_retriever)
+    and backward-compatible rerank(query, documents, top_k) method.
+    """
+
     def __init__(self, model_name: str = None, device: str = None):
-        """
-        Initialize the reranker.
-        
-        Args:
-            model_name: Name of the cross-encoder model
-            device: Device to run on ('cpu' or 'cuda')
-        """
         self.model_name = model_name or settings.reranker_model
         self.device = device or settings.embedding_device
-        
-        log.info(f"Loading reranker model: {self.model_name} on {self.device}")
-        
+
+        log.info(f"Loading LangChain CrossEncoder reranker: {self.model_name}")
+
         try:
-            self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-            self.model = AutoModelForSequenceClassification.from_pretrained(self.model_name)
-            self.model.to(self.device)
-            self.model.eval()
-            
-            log.info("Reranker model loaded successfully")
+            # ── LangChain HuggingFaceCrossEncoder ────────────────
+            self.cross_encoder = HuggingFaceCrossEncoder(
+                model_name=self.model_name,
+            )
+
+            # ── LangChain CrossEncoderReranker (document compressor) ─
+            self.compressor = CrossEncoderReranker(
+                model=self.cross_encoder,
+                top_n=settings.top_k_rerank,
+            )
+
+            log.info("LangChain CrossEncoder reranker loaded successfully")
         except Exception as e:
             log.error(f"Error loading reranker model: {e}")
             raise
-    
+
+    # ── backward-compatible rerank method ────────────────────────────
     def rerank(
         self,
         query: str,
         documents: List[Dict],
-        top_k: int = None
+        top_k: int = None,
     ) -> List[Dict]:
         """
-        Rerank documents based on relevance to query.
-        
-        Args:
-            query: Search query
-            documents: List of document dictionaries with 'content' field
-            top_k: Number of top results to return
-            
-        Returns:
-            Reranked list of documents with updated scores
+        Rerank documents using LangChain CrossEncoderReranker.
+        Accepts and returns legacy dict format for backward compatibility.
         """
         if not documents:
             log.warning("No documents to rerank")
             return []
-        
+
         top_k = top_k or settings.top_k_rerank
-        
-        log.debug(f"Reranking {len(documents)} documents")
-        
-        # Prepare query-document pairs
-        pairs = [(query, doc["content"]) for doc in documents]
-        
-        # Compute relevance scores
-        scores = self._compute_scores(pairs)
-        
-        # Add reranking scores to documents and update main score
-        for doc, score in zip(documents, scores):
-            doc["rerank_score"] = float(score)
-            doc["original_score"] = doc.get("score", 0.0)
-            # Update main score to rerank score so chunks are properly ordered
-            doc["score"] = float(score)
-        
-        # Sort by reranking score
-        reranked_docs = sorted(documents, key=lambda x: x["rerank_score"], reverse=True)
-        
-        # Return top-k
-        result = reranked_docs[:top_k]
-        
-        log.debug(f"Reranking complete. Returning top {len(result)} documents")
-        return result
-    
-    def _compute_scores(self, pairs: List[tuple]) -> List[float]:
-        """
-        Compute relevance scores for query-document pairs.
-        
-        Args:
-            pairs: List of (query, document) tuples
-            
-        Returns:
-            List of relevance scores
-        """
-        scores = []
-        batch_size = 32
-        
-        with torch.no_grad():
-            for i in range(0, len(pairs), batch_size):
-                batch_pairs = pairs[i:i + batch_size]
-                
-                # Tokenize
-                inputs = self.tokenizer(
-                    batch_pairs,
-                    padding=True,
-                    truncation=True,
-                    max_length=512,
-                    return_tensors="pt"
-                )
-                
-                # Move to device
-                inputs = {k: v.to(self.device) for k, v in inputs.items()}
-                
-                # Get scores
-                outputs = self.model(**inputs)
-                batch_scores = outputs.logits.squeeze(-1).cpu().numpy()
-                
-                # Handle single item case
-                if len(batch_pairs) == 1:
-                    batch_scores = [batch_scores.item()]
-                else:
-                    batch_scores = batch_scores.tolist()
-                
-                scores.extend(batch_scores)
-        
-        return scores
-    
+        self.compressor.top_n = top_k
+
+        log.debug(f"Reranking {len(documents)} documents with LangChain CrossEncoder")
+
+        # Convert dicts → LangChain Documents
+        lc_docs = [
+            Document(
+                page_content=doc["content"],
+                metadata={**doc.get("metadata", {}),
+                          "chunk_id": doc.get("id", ""),
+                          "original_score": doc.get("score", 0.0)},
+            )
+            for doc in documents
+        ]
+
+        # ── LangChain CrossEncoderReranker.compress_documents ────
+        reranked_docs: List[Document] = self.compressor.compress_documents(
+            lc_docs, query
+        )
+
+        # Convert back to legacy dict format
+        results = []
+        for doc in reranked_docs:
+            relevance_score = doc.metadata.get("relevance_score", 0.0)
+            results.append({
+                "id": doc.metadata.get("chunk_id", ""),
+                "content": doc.page_content,
+                "metadata": doc.metadata,
+                "score": float(relevance_score),
+                "rerank_score": float(relevance_score),
+                "original_score": doc.metadata.get("original_score", 0.0),
+            })
+
+        log.debug(f"Reranking complete. Returning top {len(results)} documents")
+        return results
+
+    # ── score a single pair ──────────────────────────────────────────
     def score_pair(self, query: str, document: str) -> float:
+        """Score a single query-document pair."""
+        result = self.rerank(query, [{"content": document, "id": "single", "metadata": {}}], top_k=1)
+        return result[0]["rerank_score"] if result else 0.0
+
+    # ── LangChain native: wrap any retriever with reranking ──────────
+    def wrap_retriever(self, base_retriever) -> ContextualCompressionRetriever:
         """
-        Score a single query-document pair.
-        
-        Args:
-            query: Search query
-            document: Document text
-            
-        Returns:
-            Relevance score
+        Wrap a LangChain retriever with this reranker using ContextualCompressionRetriever.
+
+        Usage:
+            reranked_retriever = reranker.wrap_retriever(ensemble_retriever)
+            docs = reranked_retriever.invoke("query")  # already reranked
         """
-        scores = self._compute_scores([(query, document)])
-        return scores[0]
+        return ContextualCompressionRetriever(
+            base_compressor=self.compressor,
+            base_retriever=base_retriever,
+        )
+
+    # ── expose the compressor for direct chain usage ─────────────────
+    def as_compressor(self):
+        """Return the underlying LangChain CrossEncoderReranker compressor."""
+        return self.compressor
 
 
 if __name__ == "__main__":
-    # Example usage
     reranker = Reranker()
-    
-    # Sample documents
+
     sample_docs = [
-        {
-            "content": "Machine learning is a subset of artificial intelligence.",
-            "score": 0.8,
-            "id": "doc1"
-        },
-        {
-            "content": "Deep learning uses neural networks.",
-            "score": 0.75,
-            "id": "doc2"
-        },
-        {
-            "content": "Python is a programming language.",
-            "score": 0.7,
-            "id": "doc3"
-        }
+        {"content": "Machine learning is a subset of artificial intelligence.",
+         "score": 0.8, "id": "doc1", "metadata": {}},
+        {"content": "Deep learning uses neural networks.",
+         "score": 0.75, "id": "doc2", "metadata": {}},
+        {"content": "Python is a programming language.",
+         "score": 0.7, "id": "doc3", "metadata": {}},
     ]
-    
-    # Rerank
+
     query = "What is machine learning?"
     reranked = reranker.rerank(query, sample_docs, top_k=3)
-    
-    print("Reranked results:")
     for doc in reranked:
-        print(f"  ID: {doc['id']}, Rerank Score: {doc['rerank_score']:.4f}, "
-              f"Original Score: {doc['original_score']:.4f}")
+        print(f"  ID: {doc['id']}, Rerank: {doc['rerank_score']:.4f}")
+
+    # Pure LangChain path:
+    # reranked_retriever = reranker.wrap_retriever(some_retriever)
+    # docs = reranked_retriever.invoke("What is ML?")

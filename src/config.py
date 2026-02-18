@@ -13,6 +13,13 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
     # LLM Configuration
+    llm_backend: str = Field(default="huggingface", env="LLM_BACKEND")  # "huggingface" or "ollama"
+    
+    # HuggingFace Inference API
+    hf_model: str = Field(default="meta-llama/Llama-3.1-8B-Instruct", env="HF_MODEL")
+    hf_api_token: str = Field(default="", env="HF_API_TOKEN")
+    
+    # Ollama (fallback)
     ollama_base_url: str = Field(default="http://localhost:11434", env="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="llama3.1:8b", env="OLLAMA_MODEL")
     

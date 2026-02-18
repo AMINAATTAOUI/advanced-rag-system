@@ -22,6 +22,7 @@ wheels/
 
 # Virtual Environment
 venv/
+.venv/
 env/
 ENV/
 
@@ -64,5 +65,12 @@ models/
 .coverage
 htmlcov/
 
+# Results
+results/
+
 # Redis
 dump.rdb
+
+# Misc
+retrieval_results.txt
+PROJECT_OVERVIEW.md

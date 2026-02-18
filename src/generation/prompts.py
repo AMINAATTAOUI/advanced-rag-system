@@ -1,246 +1,209 @@
 """
-Prompt templates for RAG system.
-Contains various prompt templates for different use cases.
+Prompt templates for RAG system using LangChain's ChatPromptTemplate.
+
+LangChain Components Used:
+- langchain_core.prompts.ChatPromptTemplate   → Structured prompt construction
+- langchain_core.prompts.MessagesPlaceholder  → Dynamic message insertion
+
+Key LangChain patterns:
+  prompt = ChatPromptTemplate.from_messages([
+      ("system", "..."),
+      ("human", "{context}\n{query}"),
+  ])
+  chain = prompt | llm | StrOutputParser()
 """
 
 from typing import List, Dict
-from string import Template
+
+# ── LangChain Prompt Templates ──────────────────────────────────────────
+from langchain_core.prompts import ChatPromptTemplate
 
 
 class PromptTemplates:
-    """Collection of prompt templates for RAG."""
-    
-    # System prompts
-    SYSTEM_PROMPT = """You are a helpful AI assistant that answers questions based on the provided context.
-Your responses should be:
-- Accurate and based solely on the given context
-- Clear and well-structured
-- Honest about limitations (if context doesn't contain the answer)
-- Professional and informative
+    """Collection of LangChain ChatPromptTemplates for the RAG system."""
 
-If the context doesn't contain enough information to answer the question, say so clearly."""
+    # ── System prompts (plain strings, injected into templates) ──────
+    SYSTEM_PROMPT = (
+        "You are a helpful AI assistant that answers questions based on the provided context.\n"
+        "Your responses should be:\n"
+        "- Accurate and based solely on the given context\n"
+        "- Clear and well-structured\n"
+        "- Honest about limitations (if context doesn't contain the answer)\n"
+        "- Professional and informative\n\n"
+        "If the context doesn't contain enough information to answer the question, say so clearly."
+    )
 
-    CONCISE_SYSTEM_PROMPT = """You are a precise AI assistant that provides concise, faithful answers based strictly on the provided context.
+    CONCISE_SYSTEM_PROMPT = (
+        "You are a precise AI assistant that provides concise, faithful answers "
+        "based strictly on the provided context.\n\n"
+        "Your responses must:\n"
+        "- Be brief and to-the-point\n"
+        "- Quote or closely paraphrase the context\n"
+        "- Never add information not in the context\n"
+        "- Cite sources using [1], [2], etc.\n"
+        "- State clearly if the context doesn't contain the answer\n\n"
+        "Prioritize accuracy and faithfulness over comprehensiveness."
+    )
 
-Your responses must:
-- Be brief and to-the-point
-- Quote or closely paraphrase the context
-- Never add information not in the context
-- Cite sources using [1], [2], etc.
-- State clearly if the context doesn't contain the answer
+    RESEARCH_ASSISTANT_PROMPT = (
+        "You are an expert research assistant specializing in academic papers and scientific literature.\n"
+        "Your role is to:\n"
+        "- Analyze and synthesize information from research papers\n"
+        "- Provide accurate citations and references\n"
+        "- Explain complex concepts clearly\n"
+        "- Identify key findings and methodologies\n"
+        "- Point out limitations or gaps in the research when relevant\n\n"
+        "Always base your answers on the provided context and cite specific papers when possible."
+    )
 
-Prioritize accuracy and faithfulness over comprehensiveness."""
+    # ── LangChain ChatPromptTemplates ────────────────────────────────
 
-    RESEARCH_ASSISTANT_PROMPT = """You are an expert research assistant specializing in academic papers and scientific literature.
-Your role is to:
-- Analyze and synthesize information from research papers
-- Provide accurate citations and references
-- Explain complex concepts clearly
-- Identify key findings and methodologies
-- Point out limitations or gaps in the research when relevant
+    QA_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "{system_prompt}"),
+        ("human",
+         "Context information from relevant documents:\n{context}\n\n"
+         "Based on the above context, please answer the following question:\n"
+         "Question: {query}\n\n"
+         "Instructions:\n"
+         "- Use only the information provided in the context\n"
+         "- If the context doesn't contain the answer, state that clearly\n"
+         "- Cite specific sources when possible\n"
+         "- Be concise but comprehensive\n\n"
+         "Answer:"),
+    ])
 
-Always base your answers on the provided context and cite specific papers when possible."""
+    QA_WITH_SOURCES_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "{system_prompt}"),
+        ("human",
+         "Context information from relevant documents (ranked by relevance):\n{context}\n\n"
+         "Question: {query}\n\n"
+         "Instructions:\n"
+         "- PRIORITIZE the TOP-RANKED sources [1], [2], etc. - they are most relevant\n"
+         "- Answer CONCISELY using ONLY information from the context above\n"
+         "- Start with the most relevant information from the highest-ranked sources\n"
+         "- Quote or paraphrase directly from the sources\n"
+         "- Use citations [1], [2], etc. to reference sources\n"
+         "- If the context doesn't fully answer the question, state what's missing\n"
+         "- Do NOT add information not present in the context\n\n"
+         "Answer:"),
+    ])
 
-    # RAG prompts
-    QA_TEMPLATE = Template("""Context information from relevant documents:
-$context
+    SUMMARIZATION_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "You are a helpful assistant that summarizes documents accurately."),
+        ("human",
+         "Please provide a comprehensive summary of the following documents:\n\n"
+         "{context}\n\n"
+         "Summary should include:\n"
+         "- Main topics and themes\n"
+         "- Key findings or arguments\n"
+         "- Important details and examples\n"
+         "- Overall conclusions\n\n"
+         "Summary:"),
+    ])
 
-Based on the above context, please answer the following question:
-Question: $query
+    MULTI_QUERY_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "You are an AI assistant helping to improve search queries."),
+        ("human",
+         "Given the original question, generate 3 alternative versions that capture "
+         "different aspects or phrasings of the same information need.\n\n"
+         "Original question: {query}\n\n"
+         "Generate 3 alternative questions (one per line):"),
+    ])
 
-Instructions:
-- Use only the information provided in the context
-- If the context doesn't contain the answer, state that clearly
-- Cite specific sources when possible
-- Be concise but comprehensive
+    QUERY_EXPANSION_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "You are a helpful assistant."),
+        ("human",
+         "Given the following query, suggest related terms and concepts that could "
+         "help find relevant information:\n\n"
+         "Query: {query}\n\nRelated terms and concepts:"),
+    ])
 
-Answer:""")
+    # ── Evaluation prompts ───────────────────────────────────────────
+    RELEVANCE_EVAL_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "You are an evaluation assistant."),
+        ("human",
+         "Evaluate if the following context is relevant to answer the question.\n\n"
+         "Question: {query}\nContext: {context}\n\n"
+         "Is this context relevant? Answer with 'Yes' or 'No' and provide a brief explanation.\n\n"
+         "Evaluation:"),
+    ])
 
-    QA_WITH_SOURCES_TEMPLATE = Template("""Context information from relevant documents (ranked by relevance):
-$context
+    FAITHFULNESS_EVAL_PROMPT = ChatPromptTemplate.from_messages([
+        ("system", "You are an evaluation assistant."),
+        ("human",
+         "Evaluate if the answer is faithful to the provided context.\n\n"
+         "Context: {context}\nAnswer: {answer}\n\n"
+         "Is the answer faithful? Answer with 'Yes' or 'No' and explain any discrepancies.\n\n"
+         "Evaluation:"),
+    ])
 
-Question: $query
-
-Instructions:
-- PRIORITIZE the TOP-RANKED sources [1], [2], etc. - they are most relevant
-- Answer CONCISELY using ONLY information from the context above
-- Start with the most relevant information from the highest-ranked sources
-- Quote or paraphrase directly from the sources
-- Use citations [1], [2], etc. to reference sources
-- If the context doesn't fully answer the question, state what's missing
-- Do NOT add information not present in the context
-
-Answer:""")
-
-    SUMMARIZATION_TEMPLATE = Template("""Please provide a comprehensive summary of the following documents:
-
-$context
-
-Summary should include:
-- Main topics and themes
-- Key findings or arguments
-- Important details and examples
-- Overall conclusions
-
-Summary:""")
-
-    MULTI_QUERY_TEMPLATE = Template("""You are an AI assistant helping to improve search queries.
-Given the original question, generate 3 alternative versions that capture different aspects or phrasings of the same information need.
-
-Original question: $query
-
-Generate 3 alternative questions (one per line):""")
-
-    QUERY_EXPANSION_TEMPLATE = Template("""Given the following query, suggest related terms and concepts that could help find relevant information:
-
-Query: $query
-
-Related terms and concepts:""")
-
-    # Evaluation prompts
-    RELEVANCE_EVAL_TEMPLATE = Template("""Evaluate if the following context is relevant to answer the question.
-
-Question: $query
-Context: $context
-
-Is this context relevant? Answer with 'Yes' or 'No' and provide a brief explanation.
-
-Evaluation:""")
-
-    FAITHFULNESS_EVAL_TEMPLATE = Template("""Evaluate if the answer is faithful to the provided context (i.e., doesn't contain information not present in the context).
-
-Context: $context
-Answer: $answer
-
-Is the answer faithful to the context? Answer with 'Yes' or 'No' and explain any discrepancies.
-
-Evaluation:""")
+    # ── formatting helpers (backward-compatible) ─────────────────────
 
     @staticmethod
     def format_qa_prompt(query: str, context: List[str]) -> str:
-        """
-        Format a QA prompt with query and context.
-        
-        Args:
-            query: User query
-            context: List of context strings
-            
-        Returns:
-            Formatted prompt
-        """
-        context_text = "\n\n".join([
-            f"[Document {i+1}]\n{ctx}" 
-            for i, ctx in enumerate(context)
-        ])
-        
-        return PromptTemplates.QA_TEMPLATE.substitute(
-            query=query,
-            context=context_text
+        """Format a QA prompt string (backward-compatible)."""
+        context_text = "\n\n".join(
+            [f"[Document {i+1}]\n{ctx}" for i, ctx in enumerate(context)]
         )
-    
+        messages = PromptTemplates.QA_PROMPT.format_messages(
+            system_prompt=PromptTemplates.SYSTEM_PROMPT,
+            query=query,
+            context=context_text,
+        )
+        # Return only the human message content for legacy callers
+        return messages[-1].content
+
     @staticmethod
-    def format_qa_with_sources_prompt(
-        query: str,
-        context: List[Dict]
-    ) -> str:
-        """
-        Format a QA prompt with sources.
-
-        Args:
-            query: User query
-            context: List of context dictionaries with 'content' and 'metadata'
-
-        Returns:
-            Formatted prompt
-        """
+    def format_qa_with_sources_prompt(query: str, context: List[Dict]) -> str:
+        """Format a QA prompt with sources (backward-compatible)."""
         context_text = "\n\n".join([
-            f"[{i+1}] {ctx['content']}\nSource: {ctx.get('metadata', {}).get('source', 'Unknown')}\nRelevance Score: {ctx.get('score', 'N/A')}"
+            f"[{i+1}] {ctx['content']}\n"
+            f"Source: {ctx.get('metadata', {}).get('source', 'Unknown')}\n"
+            f"Relevance Score: {ctx.get('score', 'N/A')}"
             for i, ctx in enumerate(context)
         ])
-
-        return PromptTemplates.QA_WITH_SOURCES_TEMPLATE.substitute(
+        messages = PromptTemplates.QA_WITH_SOURCES_PROMPT.format_messages(
+            system_prompt=PromptTemplates.SYSTEM_PROMPT,
             query=query,
-            context=context_text
+            context=context_text,
         )
-    
+        return messages[-1].content
+
     @staticmethod
     def format_summarization_prompt(documents: List[str]) -> str:
-        """
-        Format a summarization prompt.
-        
-        Args:
-            documents: List of document texts
-            
-        Returns:
-            Formatted prompt
-        """
         context_text = "\n\n---\n\n".join(documents)
-        
-        return PromptTemplates.SUMMARIZATION_TEMPLATE.substitute(
-            context=context_text
-        )
-    
+        messages = PromptTemplates.SUMMARIZATION_PROMPT.format_messages(context=context_text)
+        return messages[-1].content
+
     @staticmethod
     def format_multi_query_prompt(query: str) -> str:
-        """
-        Format a multi-query generation prompt.
-        
-        Args:
-            query: Original query
-            
-        Returns:
-            Formatted prompt
-        """
-        return PromptTemplates.MULTI_QUERY_TEMPLATE.substitute(query=query)
-    
+        messages = PromptTemplates.MULTI_QUERY_PROMPT.format_messages(query=query)
+        return messages[-1].content
+
     @staticmethod
     def format_query_expansion_prompt(query: str) -> str:
-        """
-        Format a query expansion prompt.
-        
-        Args:
-            query: Original query
-            
-        Returns:
-            Formatted prompt
-        """
-        return PromptTemplates.QUERY_EXPANSION_TEMPLATE.substitute(query=query)
-    
+        messages = PromptTemplates.QUERY_EXPANSION_PROMPT.format_messages(query=query)
+        return messages[-1].content
+
     @staticmethod
     def get_system_prompt(prompt_type: str = "default") -> str:
-        """
-        Get a system prompt by type.
-        
-        Args:
-            prompt_type: Type of system prompt ('default', 'research', 'concise')
-            
-        Returns:
-            System prompt string
-        """
         prompts = {
             "default": PromptTemplates.SYSTEM_PROMPT,
             "research": PromptTemplates.RESEARCH_ASSISTANT_PROMPT,
-            "concise": PromptTemplates.CONCISE_SYSTEM_PROMPT
+            "concise": PromptTemplates.CONCISE_SYSTEM_PROMPT,
         }
-        
         return prompts.get(prompt_type, PromptTemplates.SYSTEM_PROMPT)
 
 
 if __name__ == "__main__":
-    # Example usage
     query = "What is machine learning?"
     context = [
         "Machine learning is a subset of artificial intelligence.",
-        "It focuses on building systems that learn from data."
+        "It focuses on building systems that learn from data.",
     ]
-    
-    # Format QA prompt
     prompt = PromptTemplates.format_qa_prompt(query, context)
-    print("QA Prompt:")
-    print(prompt)
-    print("\n" + "="*50 + "\n")
-    
-    # Format multi-query prompt
-    multi_query_prompt = PromptTemplates.format_multi_query_prompt(query)
-    print("Multi-Query Prompt:")
-    print(multi_query_prompt)
+    print("QA Prompt:\n", prompt)
+
+    # Pure LangChain path:
+    # chain = PromptTemplates.QA_PROMPT | llm | StrOutputParser()
+    # result = chain.invoke({"system_prompt": "...", "query": "...", "context": "..."})

@@ -2,16 +2,16 @@
   {
     "id": "q01",
     "eval_type": "retrieval",
-    "question": "According to the sandbagging papers, how can models be trained to hide capabilities unless a trigger is present?",
-    "expected_answer": "By training password-locked sandbaggers that underperform unless a specific trigger is provided.",
+    "question": "According to the paper 'PERSONA: Dynamic and Compositional Inference-Time Personality Control via Activa', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses PERSONA: Dynamic and Compositional Inference-Time Personality Control via Activation Vector Algebra.",
     "relevant_docs": [
-      "2512.07810v1.pdf"
+      "2602.15669v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "password-locked",
-        "sandbagging",
-        "trigger"
+        "published",
+        "conference",
+        "persona"
       ]
     },
     "difficulty": "easy"
@@ -19,50 +19,50 @@
   {
     "id": "q02",
     "eval_type": "retrieval",
-    "question": "What type of private information can code models leak according to the code privacy studies?",
-    "expected_answer": "Personally identifiable information such as emails, passwords, and usernames.",
+    "question": "What are key findings or results reported in 'PERSONA: Dynamic and Compositional Inference-Time Personality Control via Activa'?",
+    "expected_answer": "The paper discusses PERSONA: Dynamic and Compositional Inference-Time Personality Control via Activation Vector Algebra.",
     "relevant_docs": [
-      "2512.07814v1.pdf"
+      "2602.15669v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "PII",
-        "memorization",
-        "code repositories"
-      ]
-    },
-    "difficulty": "easy"
-  },
-  {
-    "id": "q03",
-    "eval_type": "retrieval",
-    "question": "What theoretical guarantee does minimizing next-token loss provide in language models?",
-    "expected_answer": "It guarantees k-token indistinguishability from the training distribution.",
-    "relevant_docs": [
-      "2512.07818v1.pdf"
-    ],
-    "gold_evidence": {
-      "expected_keywords": [
-        "next-token loss",
-        "k-token",
-        "indistinguishability"
+        "published",
+        "conference",
+        "persona"
       ]
     },
     "difficulty": "medium"
   },
   {
-    "id": "q04",
+    "id": "q03",
     "eval_type": "retrieval",
-    "question": "In the EEG classification, what causes gradient conflicts during multi-domain training?",
-    "expected_answer": "Different domains produce opposing gradient directions.",
+    "question": "According to the paper 'LLM-to-Speech: A Synthetic Data Pipeline for Training Dialectal Text-to-Speech M', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses LLM-to-Speech: A Synthetic Data Pipeline for Training Dialectal Text-to-Speech Models.",
     "relevant_docs": [
-      "2512.07820v1.pdf"
+      "2602.15675v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "gradient conflict",
-        "multi-domain",
-        "Pareto"
+        "synthetic",
+        "pipeline",
+        "training"
+      ]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "q04",
+    "eval_type": "retrieval",
+    "question": "What are key findings or results reported in 'LLM-to-Speech: A Synthetic Data Pipeline for Training Dialectal Text-to-Speech M'?",
+    "expected_answer": "The paper discusses LLM-to-Speech: A Synthetic Data Pipeline for Training Dialectal Text-to-Speech Models.",
+    "relevant_docs": [
+      "2602.15675v1.pdf"
+    ],
+    "gold_evidence": {
+      "expected_keywords": [
+        "synthetic",
+        "pipeline",
+        "training"
       ]
     },
     "difficulty": "medium"
@@ -70,50 +70,50 @@
   {
     "id": "q05",
     "eval_type": "retrieval",
-    "question": "What role does synthetic data play in WorldReel’s video generation approach?",
-    "expected_answer": "It provides precise geometric and motion supervision.",
+    "question": "According to the paper 'Relative Geometry of Neural Forecasters: Linking Accuracy and Alignment in Learn', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses Relative Geometry of Neural Forecasters: Linking Accuracy and Alignment in Learned Latent Geometry.",
     "relevant_docs": [
-      "2512.07821v1.pdf"
+      "2602.15676v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "synthetic data",
-        "geometry",
-        "motion"
-      ]
-    },
-    "difficulty": "medium"
-  },
-  {
-    "id": "q06",
-    "eval_type": "retrieval",
-    "question": "How do adaptive honeynets escalate suspicious sessions?",
-    "expected_answer": "By using reinforcement learning to move sessions from low-interaction to high-interaction environments.",
-    "relevant_docs": [
-      "2512.07827v1.pdf"
-    ],
-    "gold_evidence": {
-      "expected_keywords": [
-        "honeynet",
-        "reinforcement learning",
-        "escalation"
+        "published",
+        "transactions",
+        "machine"
       ]
     },
     "difficulty": "easy"
   },
   {
-    "id": "q07",
+    "id": "q06",
     "eval_type": "retrieval",
-    "question": "Which user groups show higher adoption of AI agents in the Perplexity study?",
-    "expected_answer": "Knowledge workers using AI for productivity and learning tasks.",
+    "question": "What are key findings or results reported in 'Relative Geometry of Neural Forecasters: Linking Accuracy and Alignment in Learn'?",
+    "expected_answer": "The paper discusses Relative Geometry of Neural Forecasters: Linking Accuracy and Alignment in Learned Latent Geometry.",
     "relevant_docs": [
-      "2512.07828v1.pdf"
+      "2602.15676v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "knowledge workers",
-        "adoption",
-        "productivity"
+        "published",
+        "transactions",
+        "machine"
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "q07",
+    "eval_type": "retrieval",
+    "question": "According to the paper 'CAMEL: An ECG Language Model for Forecasting Cardiac Events', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses CAMEL: An ECG Language Model for Forecasting Cardiac Events.",
+    "relevant_docs": [
+      "2602.15677v1.pdf"
+    ],
+    "gold_evidence": {
+      "expected_keywords": [
+        "language",
+        "forecasting",
+        "cardiac"
       ]
     },
     "difficulty": "easy"
@@ -121,16 +121,16 @@
   {
     "id": "q08",
     "eval_type": "retrieval",
-    "question": "How does the FAE method adapt pretrained image encoders for generation?",
-    "expected_answer": "By compressing embeddings with a single self-attention layer into generative latents.",
+    "question": "What are key findings or results reported in 'CAMEL: An ECG Language Model for Forecasting Cardiac Events'?",
+    "expected_answer": "The paper discusses CAMEL: An ECG Language Model for Forecasting Cardiac Events.",
     "relevant_docs": [
-      "2512.07829v1.pdf"
+      "2602.15677v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "self-attention",
-        "adapter",
-        "latent"
+        "language",
+        "forecasting",
+        "cardiac"
       ]
     },
     "difficulty": "medium"
@@ -138,33 +138,33 @@
   {
     "id": "q09",
     "eval_type": "retrieval",
-    "question": "What limitation do the authors find regarding OOD generalization transfer?",
-    "expected_answer": "Generalization results do not reliably transfer across datasets.",
+    "question": "According to the paper 'Revisiting Northrop Frye's Four Myths Theory with Large Language Models', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses Revisiting Northrop Frye's Four Myths Theory with Large Language Models.",
     "relevant_docs": [
-      "2512.07832v1.pdf"
+      "2602.15678v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "out-of-distribution",
-        "partial correlation",
-        "dataset"
+        "largelanguagemodels",
+        "edirlei",
+        "soares"
       ]
     },
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "id": "q10",
     "eval_type": "retrieval",
-    "question": "What is the key idea behind relational visual similarity?",
-    "expected_answer": "Capturing abstract relational patterns rather than surface-level attributes.",
+    "question": "What are key findings or results reported in 'Revisiting Northrop Frye's Four Myths Theory with Large Language Models'?",
+    "expected_answer": "The paper discusses Revisiting Northrop Frye's Four Myths Theory with Large Language Models.",
     "relevant_docs": [
-      "2512.07833v1.pdf"
+      "2602.15678v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "relational similarity",
-        "abstract",
-        "grouped images"
+        "largelanguagemodels",
+        "edirlei",
+        "soares"
       ]
     },
     "difficulty": "medium"
@@ -172,126 +172,135 @@
   {
     "id": "q11",
     "eval_type": "retrieval",
-    "question": "How do sandbagging and adaptive honeynets differ in detecting deceptive behavior?",
-    "expected_answer": "Sandbagging detection analyzes model behavior, while honeynets escalate network interactions for analysis.",
+    "question": "According to the paper 'Estimating Human Muscular Fatigue in Dynamic Collaborative Robotic Tasks with Le', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses Estimating Human Muscular Fatigue in Dynamic Collaborative Robotic Tasks with Learning-Based Models.",
     "relevant_docs": [
-      "2512.07810v1.pdf",
-      "2512.07827v1.pdf"
+      "2602.15684v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "sandbagging",
-        "honeynet",
-        "detection"
+        "estimating",
+        "muscular",
+        "fatigue"
       ]
     },
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "id": "q12",
     "eval_type": "retrieval",
-    "question": "What connects training difficulty in code models with theoretical guarantees in language modeling?",
-    "expected_answer": "Both relate to learning dynamics, but theory does not guarantee practical training outcomes.",
+    "question": "What are key findings or results reported in 'Estimating Human Muscular Fatigue in Dynamic Collaborative Robotic Tasks with Le'?",
+    "expected_answer": "The paper discusses Estimating Human Muscular Fatigue in Dynamic Collaborative Robotic Tasks with Learning-Based Models.",
     "relevant_docs": [
-      "2512.07814v1.pdf",
-      "2512.07818v1.pdf"
+      "2602.15684v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "training dynamics",
-        "theory",
-        "next-token"
-      ]
-    },
-    "difficulty": "hard"
-  },
-  {
-    "id": "q13",
-    "eval_type": "retrieval",
-    "question": "What is the weather like today in major European cities?",
-    "expected_answer": "This question cannot be answered from the provided research papers.",
-    "relevant_docs": [],
-    "difficulty": "easy"
-  },
-  {
-    "id": "q14",
-    "eval_type": "retrieval",
-    "question": "How do you prepare traditional Italian pasta dishes?",
-    "expected_answer": "This question is outside the scope of the AI research documents.",
-    "relevant_docs": [],
-    "difficulty": "easy"
-  },
-  {
-    "id": "q15",
-    "eval_type": "retrieval",
-    "question": "What are the ethical considerations when using elicitation techniques to detect hidden AI capabilities - does removing sandbagging prove malicious intent?",
-    "expected_answer": "Ambiguous - elicitation removes underperformance but may not prove malicious intent; could refer to privacy in code models, entrapment in honeypots, or responsible deployment depending on context.",
-    "relevant_docs": [
-      "2512.07810v1.pdf",
-      "2512.07814v1.pdf",
-      "2512.07827v1.pdf",
-      "2512.07828v1.pdf"
-    ],
-    "gold_evidence": {
-      "expected_keywords": [
-        "elicitation",
-        "malicious intent",
-        "privacy",
-        "entrapment"
+        "estimating",
+        "muscular",
+        "fatigue"
       ]
     },
     "difficulty": "medium"
   },
   {
-    "id": "q16",
+    "id": "q13",
     "eval_type": "retrieval",
-    "question": "How might the causal relationship between training dynamics and PII leakage in code models affect the design of privacy-preserving AI systems?",
-    "expected_answer": "Ambiguous - could refer to type-aware defenses, learnability-aware filtering, or broader implications for model training practices and deployment safety.",
+    "question": "According to the paper '', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses .",
     "relevant_docs": [
-      "2512.07814v1.pdf",
-      "2512.07818v1.pdf"
+      "2602.15698v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "training dynamics",
-        "PII leakage",
-        "privacy-preserving",
-        "type-aware defenses"
+        "discussion",
+        "conclusion",
+        "summary"
       ]
     },
-    "difficulty": "hard"
+    "difficulty": "easy"
+  },
+  {
+    "id": "q14",
+    "eval_type": "retrieval",
+    "question": "What are key findings or results reported in ''?",
+    "expected_answer": "The paper discusses .",
+    "relevant_docs": [
+      "2602.15698v1.pdf"
+    ],
+    "gold_evidence": {
+      "expected_keywords": [
+        "discussion",
+        "conclusion",
+        "summary"
+      ]
+    },
+    "difficulty": "medium"
+  },
+  {
+    "id": "q15",
+    "eval_type": "retrieval",
+    "question": "According to the paper 'Controlled oscillation modeling using port-Hamiltonian neural networks', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses Controlled oscillation modeling using port-Hamiltonian neural networks.",
+    "relevant_docs": [
+      "2602.15704v1.pdf"
+    ],
+    "gold_evidence": {
+      "expected_keywords": [
+        "controlled",
+        "oscillation",
+        "modeling"
+      ]
+    },
+    "difficulty": "easy"
+  },
+  {
+    "id": "q16",
+    "eval_type": "retrieval",
+    "question": "What are key findings or results reported in 'Controlled oscillation modeling using port-Hamiltonian neural networks'?",
+    "expected_answer": "The paper discusses Controlled oscillation modeling using port-Hamiltonian neural networks.",
+    "relevant_docs": [
+      "2602.15704v1.pdf"
+    ],
+    "gold_evidence": {
+      "expected_keywords": [
+        "controlled",
+        "oscillation",
+        "modeling"
+      ]
+    },
+    "difficulty": "medium"
   },
   {
     "id": "q17",
     "eval_type": "retrieval",
-    "question": "What are the explicit polynomial bounds (in k, 1/ε, and distinguisher size) proven for RNNs achieving k-token indistinguishability, and how do they scale with document length n?",
-    "expected_answer": "Bounds scale polynomially in k, 1/ε, and distinguisher size but are independent of document length n, achieved through constructive RNN boosting and enumeration.",
+    "question": "According to the paper 'Proactive Conversational Assistant for a Procedural Manual Task based on Audio a', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses Proactive Conversational Assistant for a Procedural Manual Task based on Audio and IMU.",
     "relevant_docs": [
-      "2512.07818v1.pdf"
+      "2602.15707v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "polynomial bounds",
-        "polynomial in k and ε",
-        "RNN boosting",
-        "independent of n"
+        "proactive",
+        "conversational",
+        "assistant"
       ]
     },
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "id": "q18",
     "eval_type": "retrieval",
-    "question": "How can combining center loss and pairwise loss improve inter-class separability in EEG signal classification?",
-    "expected_answer": "Center loss pulls positives toward class centers while pairwise loss pushes negatives apart, creating tighter class clusters for better discrimination.",
+    "question": "What are key findings or results reported in 'Proactive Conversational Assistant for a Procedural Manual Task based on Audio a'?",
+    "expected_answer": "The paper discusses Proactive Conversational Assistant for a Procedural Manual Task based on Audio and IMU.",
     "relevant_docs": [
-      "2512.07820v1.pdf"
+      "2602.15707v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "center loss",
-        "pairwise loss",
-        "class clusters"
+        "proactive",
+        "conversational",
+        "assistant"
       ]
     },
     "difficulty": "medium"
@@ -299,33 +308,33 @@
   {
     "id": "q19",
     "eval_type": "retrieval",
-    "question": "What targeted regularizers can be used in temporal decoders to separate camera motion from object motion in video generation?",
-    "expected_answer": "Regularizers that separate camera vs object motion while enforcing geometric/motion consistency across frames.",
+    "question": "According to the paper 'Outer Diversity of Structured Domains', what is the main contribution or approach proposed?",
+    "expected_answer": "The paper discusses Outer Diversity of Structured Domains.",
     "relevant_docs": [
-      "2512.07821v1.pdf"
+      "2602.15708v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "regularizers",
-        "camera motion",
-        "object motion"
+        "diversity",
+        "structured",
+        "domains"
       ]
     },
-    "difficulty": "hard"
+    "difficulty": "easy"
   },
   {
     "id": "q20",
     "eval_type": "retrieval",
-    "question": "Why is using log-count rewards problematic for prioritizing high-value threat intelligence in adaptive honeynet systems?",
-    "expected_answer": "It favors noisy scanners over stealthy adversaries and can be easily gamed, as it simply counts logged events without considering intelligence value or quality.",
+    "question": "What are key findings or results reported in 'Outer Diversity of Structured Domains'?",
+    "expected_answer": "The paper discusses Outer Diversity of Structured Domains.",
     "relevant_docs": [
-      "2512.07827v1.pdf"
+      "2602.15708v1.pdf"
     ],
     "gold_evidence": {
       "expected_keywords": [
-        "log-count reward",
-        "noisy scanners",
-        "intelligence value"
+        "diversity",
+        "structured",
+        "domains"
       ]
     },
     "difficulty": "medium"
